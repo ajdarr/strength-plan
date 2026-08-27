@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Home Strength Plan</title>
+<!-- Add-to-Home-Screen / web-app behaviour (iPhone) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strength">
+<meta name="application-name" content="Strength">
+<meta name="theme-color" content="#E4E7DE">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E4E7DE;
+    --card:#FCFCFA;
+    --ink:#16181A;
+    --ink-soft:#565C58;
+    --ink-faint:#8A8F88;
+    --hivis:#CDEB2E;
+    --hivis-deep:#A6C41C;
+    --line:#D3D7CC;
+    --shadow:0 1px 2px rgba(22,24,26,.06),0 6px 18px rgba(22,24,26,.05);
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--page);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    line-height:1.5;
+    padding-bottom:48px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+  /* ---- Header ---- */
+  header{
+    padding:26px 16px 18px;
+    max-width:640px;margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    font-size:13px;color:var(--ink-soft);
+  }
+  h1{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    font-size:40px;line-height:.98;letter-spacing:-.01em;
+    text-transform:uppercase;
+    margin:2px 0 8px;
+  }
+  h1 .hl{
+    background:linear-gradient(180deg,transparent 55%,var(--hivis) 55%);
+    padding:0 3px;
+  }
+  .sub{color:var(--ink-soft);font-size:14.5px;max-width:46ch}
+
+  /* ---- Tab bar ---- */
+  .tabs{
+    position:sticky;top:0;z-index:20;
+    background:var(--page);
+    padding:10px 0 8px;
+    margin-bottom:6px;
+  }
+  .tabs-inner{
+    display:flex;gap:7px;overflow-x:auto;
+    max-width:640px;margin:0 auto;padding:0 16px;
+    scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .tabs-inner::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;font-size:16px;letter-spacing:.02em;
+    text-transform:uppercase;
+    padding:9px 15px;border-radius:100px;
+    background:var(--card);color:var(--ink-soft);
+    border:1.5px solid var(--line);
+    cursor:pointer;white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .tab:hover{border-color:var(--ink-faint)}
+  .tab[aria-selected="true"]{
+    background:var(--hivis);color:var(--ink);
+    border-color:var(--hivis-deep);
+  }
+  .tab:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+  /* ---- Panels ---- */
+  .panel{display:none;animation:fade .2s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .day-head{
+    display:flex;align-items:baseline;gap:12px;
+    margin:8px 0 4px;
+  }
+  .monogram{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:52px;line-height:.8;
+    color:var(--ink);
+  }
+  .day-meta .k{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+    font-size:12px;color:var(--ink-soft);
+  }
+  .day-meta .v{font-size:14px;color:var(--ink-soft)}
+
+  /* ---- Exercise cards (native <details>) ---- */
+  .ex{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);margin:9px 0;box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .ex[open]{border-color:var(--ink-faint)}
+  summary{
+    list-style:none;cursor:pointer;
+    display:flex;align-items:center;gap:12px;
+    padding:13px 14px;
+  }
+  summary::-webkit-details-marker{display:none}
+  .num{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:19px;
+    width:26px;height:26px;flex:0 0 26px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:7px;background:var(--page);color:var(--ink);
+  }
+  .ex.power .num{background:var(--hivis)}
+  .ex-name{
+    flex:1;min-width:0;
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;font-size:20px;line-height:1.05;
+    letter-spacing:.005em;
+  }
+  .reps{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;font-size:17px;white-space:nowrap;
+    color:var(--ink);text-align:right;
+  }
+  .chev{
+    flex:0 0 auto;color:var(--ink-faint);
+    transition:transform .2s ease;
+  }
+  .ex[open] .chev{transform:rotate(180deg)}
+
+  .body{padding:2px 14px 15px 52px}
+  .alt{
+    font-size:13.5px;color:var(--ink-soft);
+    padding:8px 11px;margin-bottom:11px;
+    background:var(--page);border-radius:9px;
+  }
+  .alt b{color:var(--ink);font-weight:600}
+  .desc{font-size:14.5px;color:var(--ink);margin-bottom:12px}
+  .cue{
+    display:flex;gap:9px;align-items:flex-start;
+    font-size:14px;
+  }
+  .cue .lab{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    font-size:12px;flex:0 0 auto;padding-top:1px;
+    color:var(--ink);
+  }
+  .cue .txt{
+    background:linear-gradient(180deg,transparent 45%,var(--hivis) 45%);
+    font-weight:500;
+  }
+
+  /* ---- Text panels (Progress / Guide) ---- */
+  .prose h2{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:26px;text-transform:uppercase;
+    letter-spacing:.01em;margin:6px 0 3px;
+  }
+  .prose .lead{color:var(--ink-soft);font-size:14.5px;margin-bottom:14px}
+  .block{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow);
+    padding:15px 16px;margin:11px 0;
+  }
+  .block h3{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;font-size:19px;letter-spacing:.01em;
+    margin-bottom:5px;
+    display:flex;align-items:center;gap:9px;
+  }
+  .block h3 .step{
+    font-weight:700;font-size:15px;
+    background:var(--hivis);color:var(--ink);
+    width:24px;height:24px;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .block p{font-size:14.5px;color:var(--ink)}
+  .block p+p{margin-top:8px}
+  .block .k{font-weight:600}
+  .ramp{
+    display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;
+  }
+  .ramp span{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:15px;padding:5px 11px;border-radius:8px;
+    background:var(--page);border:1px solid var(--line);
+  }
+  .ramp span:last-child{background:var(--hivis);border-color:var(--hivis-deep)}
+  .note{
+    font-size:13px;color:var(--ink-soft);
+    margin-top:22px;padding:0 2px;
+  }
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Home Strength · 2 days / week</div>
+  <h1>The <span class="hl">Big Three</span>,<br>garage edition</h1>
+  <p class="sub">Dumbbells, a Swiss ball and a medicine ball. Built to keep power and durability on the bike as the years add up.</p>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner" role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  data-panel="a">Day A</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="b">Day B</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="progress">Progress</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="guide">Guide</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ DAY A ============ -->
+  <section class="panel active" id="a">
+    <div class="day-head">
+      <div class="monogram">A</div>
+      <div class="day-meta">
+        <div class="k">Full body · squat focus</div>
+        <div class="v">Tap any move for how-to &amp; the one key cue</div>
+      </div>
+    </div>
+
+    <details class="ex">
+      <summary><span class="num">1</span><span class="ex-name">Goblet squat</span><span class="reps">3 × 8–12</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Too easy?</b> Swap to Bulgarian split squats, 3 × 8 per leg.</div>
+        <p class="desc">Hold one dumbbell vertically against your chest, cupped under the top end like a goblet, elbows tucked down. Feet a little wider than hips. Sit down and back as if lowering onto a low chair, chest up, knees tracking over your toes, until thighs are roughly parallel to the floor. Stand back up.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">The dumbbell at your chest keeps you upright and protects your lower back.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">2</span><span class="ex-name">Swiss ball dumbbell press</span><span class="reps">3 × 8–10</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <p class="desc">Sit on the ball, walk your feet forward and roll down until just your upper back and head rest on it, hips lifted so your torso makes a flat table — this stands in for a bench. Dumbbells above your chest; press up until arms are straight, lower under control until elbows are level with your torso.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Squeeze your glutes the whole time to hold the bridge steady.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">3</span><span class="ex-name">Single-arm dumbbell row</span><span class="reps">3 × 8–10 / arm</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <p class="desc">Place one knee and the same-side hand on the Swiss ball (or a chair) so your back is flat and roughly parallel to the floor. The dumbbell hangs from your free hand. Pull it up towards your hip, leading with the elbow and squeezing the shoulder blade, then lower fully.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Keep your back flat — don't twist your torso to heave the weight up.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">4</span><span class="ex-name">Swiss ball hamstring curl</span><span class="reps">2–3 × 10–12</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <p class="desc">Lie on your back, heels and lower calves on top of the ball, arms flat for balance. Lift your hips into a bridge, then bend your knees to roll the ball in towards your backside, then roll it back out under control.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Keep your hips lifted throughout — that's what makes the hamstrings work.</span></div>
+      </div>
+    </details>
+
+    <details class="ex power">
+      <summary><span class="num">5</span><span class="ex-name">Medicine ball slam</span><span class="reps">3 × 6–8</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Power move.</b> Don't skip it — explosive work fades faster with age than raw strength, and it carries straight over to sprints.</div>
+        <p class="desc">Stand tall, ball overhead in both hands. Reach up, then throw it down hard into the floor in front of you, hinging at the hips as you slam. Catch on the bounce or pick it up, and repeat.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Speed and intent, not grinding — short, sharp, explosive reps.</span></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DAY B ============ -->
+  <section class="panel" id="b">
+    <div class="day-head">
+      <div class="monogram">B</div>
+      <div class="day-meta">
+        <div class="k">Full body · hinge focus</div>
+        <div class="v">Tap any move for how-to &amp; the one key cue</div>
+      </div>
+    </div>
+
+    <details class="ex">
+      <summary><span class="num">1</span><span class="ex-name">Dumbbell Romanian deadlift</span><span class="reps">3 × 8–10</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Want more balance work?</b> Single-leg RDL, 3 × 8 per leg.</div>
+        <p class="desc">Stand holding the dumbbells in front of your thighs. With a soft, constant bend in the knees, push your hips backwards and let the dumbbells slide down the front of your legs, kept close, until you feel a stretch in your hamstrings (around shin height). Stand up by driving your hips forward.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">It's a hip hinge, not a squat — back flat, chest proud, motion from the hips.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">2</span><span class="ex-name">Standing overhead press</span><span class="reps">3 × 6–8</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <p class="desc">Stand tall, dumbbells at shoulder height, palms facing forward. Press straight overhead until your arms lock out, then lower under control back to your shoulders.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Brace your stomach and squeeze your glutes so you don't arch your lower back to help.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">3</span><span class="ex-name">Reverse lunge</span><span class="reps">3 × 8 / leg</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Alternative:</b> step-ups onto a solid box or low bench — drive through the top heel, lower under control.</div>
+        <p class="desc">From standing, step one foot back a stride's length and lower until both knees are bent around 90°, back knee hovering near the floor. Push through the front heel to step back up. Dumbbells at your sides.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Stepping backwards, not forwards, is gentler on the knees.</span></div>
+      </div>
+    </details>
+
+    <details class="ex">
+      <summary><span class="num">4</span><span class="ex-name">Swiss ball stir-the-pot</span><span class="reps">2–3 sets</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Simpler option:</b> dead bug — on your back, lower opposite arm and leg while pressing your lower back flat to the floor.</div>
+        <p class="desc">Set your forearms on the ball in a plank, body in a straight line, feet on the floor. Keeping your torso rock-solid, use your forearms to move the ball in small circles, as if stirring a big pot.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Small circles — the point is resisting the wobble, not making big movements.</span></div>
+      </div>
+    </details>
+
+    <details class="ex power">
+      <summary><span class="num">5</span><span class="ex-name">Med ball rotational throw</span><span class="reps">3 × 6 / side</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="body">
+        <div class="alt"><b>Power move.</b> Explosive rotation from the hips — carries over to standing efforts and sprints.</div>
+        <p class="desc">Stand side-on to a solid wall, a step away, ball at waist height in both hands. Rotate away to wind up, then powerfully rotate your hips and torso towards the wall and throw the ball into it, catching the rebound. All reps one side, then turn around.</p>
+        <div class="cue"><span class="lab">Cue</span><span class="txt">Drive the throw from the hips, not the arms.</span></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PROGRESS ============ -->
+  <section class="panel prose" id="progress">
+    <h2>Making it harder</h2>
+    <p class="lead">With fixed dumbbells you can't just add plates. Work through these four levers in order before you buy heavier weights.</p>
+
+    <div class="block">
+      <h3><span class="step">1</span>Add reps, then a set</h3>
+      <p>Climb to the top of the rep range across all sets, then add a whole set. This is <span class="k">double progression</span> — reps first, then volume.</p>
+    </div>
+    <div class="block">
+      <h3><span class="step">2</span>Slow the lowering</h3>
+      <p>Take a <span class="k">3-second descent</span> on every rep. A light dumbbell starts to feel a lot heavier when you can't rush the way down.</p>
+    </div>
+    <div class="block">
+      <h3><span class="step">3</span>Add a pause</h3>
+      <p>Hold for a beat at the hardest point — the bottom of a split squat, the stretch of an RDL. No momentum to help you out of it.</p>
+    </div>
+    <div class="block">
+      <h3><span class="step">4</span>Go single-leg</h3>
+      <p>Shift bilateral moves to one leg at a time. That roughly <span class="k">doubles the effective load</span> per leg without needing a single extra kilo.</p>
+    </div>
+
+    <div class="block">
+      <h3>The 4-week rhythm</h3>
+      <p>Run it in blocks. Weeks <span class="k">1–3</span> add a little each week — a rep, a set, or a touch more load. Week <span class="k">4</span> back right off to RPE 6 as a deload. Start the next block slightly harder than you began the last.</p>
+    </div>
+  </section>
+
+  <!-- ============ GUIDE ============ -->
+  <section class="panel prose" id="guide">
+    <h2>Warm-up &amp; effort</h2>
+    <p class="lead">The habits around the lifting matter as much as the lifting — especially for protecting your back.</p>
+
+    <div class="block">
+      <h3>Always warm up the main move</h3>
+      <p>Anatoly's competitive career was effectively ended by lifting heavy cold for the cameras. Do the opposite: ramp up with a few progressively heavier sets before your first working set.</p>
+      <div class="ramp"><span>Empty / light</span><span>~40%</span><span>~60%</span><span>~80%</span><span>Working</span></div>
+    </div>
+
+    <div class="block">
+      <h3>Read effort with RPE</h3>
+      <p>Forget chasing a one-rep max. Work at <span class="k">RPE 7–8</span> — finish each set with <span class="k">2–3 reps still in the tank</span>. Safer and more sustainable for a Masters athlete, and it still drives real gains.</p>
+    </div>
+
+    <div class="block">
+      <h3>Fit it around the bike</h3>
+      <p>Keep heavy leg days away from your key interval or long rides — ideally on an easy or rest day. Your legs will feel heavy for the first couple of weeks; that settles, and the payoff is better sprint power and late-ride durability.</p>
+    </div>
+
+    <div class="block">
+      <h3>Feed the work</h3>
+      <p>Older athletes face some anabolic resistance, so both the strength stimulus and protein matter more than they used to. A common sports-nutrition range is roughly <span class="k">1.6–2.2 g of protein per kg of bodyweight daily</span>, spread across the day. General guidance, not a personalised prescription — treat it as a starting point.</p>
+    </div>
+
+    <p class="note"><b>A note on the plan.</b> This is general fitness information rather than individual medical or physiotherapy advice. If a movement causes pain (as opposed to normal effort), stop and get it checked — especially anything involving your back.</p>
+  </section>
+
+</main>
+
+<script>
+  (function(){
+    var tabs = document.querySelectorAll('.tab');
+    var panels = document.querySelectorAll('.panel');
+
+    function show(name){
+      tabs.forEach(function(t){
+        t.setAttribute('aria-selected', t.dataset.panel === name ? 'true' : 'false');
+      });
+      panels.forEach(function(p){
+        p.classList.toggle('active', p.id === name);
+      });
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    tabs.forEach(function(t){
+      t.addEventListener('click', function(){ show(t.dataset.panel); });
+    });
+  })();
+</script>
+</body>
+</html>
